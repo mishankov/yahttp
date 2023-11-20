@@ -8,7 +8,7 @@
 - API focused on DX
 
 # Installation
-> nimble package manager release comming soon
+> nimble package manager release coming soon
 
 ```shell
 nimble install https://github.com/mishankov/yahttp
@@ -59,16 +59,16 @@ Arguments:
 request("http://api")
 ```
 
-Has the same argumens as method procedures and one additional:
+Has the same arguments as method procedures and one additional:
 - `httplMethod` - HTTP method. `Method.GET` by default. Example: `Method.POST`
 
 ## Response object
 All procedures above return `Response` object with fields:
 - `status` - HTTP status code
 - `body` - response body as a string
-- `headers` - sequence of response hearders
+- `headers` - sequence of response headers
 
-`Response` object has some helper pocedures:
+`Response` object has some helper procedures:
 - `Response.json()` - returns response body as JSON
 - `Response.to(t)` - converts response body to JSON and unmarshals it to type `t`
 - `Response.ok()` - returns `true` if `status` is greater than 0 and less than 400
