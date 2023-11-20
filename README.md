@@ -46,10 +46,10 @@ head("http://api")
 options("http://api")
 ```
 Arguments:
-- `url` - request URL. single mandatory argument. 
+- `url` - request URL. The only required argument
 - `headers` - request HTTP headers. Example: `{"header1": "val", "header2": "val2"}`
 - `queryParams` - request query params. Example: `{"param1": "val", "param2": "val2"}`
-- `body` - request body as a string. Example: `"{\"key\": \"value\"}\"`. Is not available for `get`, `head` and `options`
+- `body` - request body as a string. Example: `"{\"key\": \"value\"}\"`. Is not available for `get`, `head` and `options` procedures
 - `auth` - login and password for basic authentication. Example: `("login", "password")`
 - `ignoreSsl` - no certificate verification if `true`
 
@@ -72,4 +72,3 @@ All procedures above return `Response` object with fields:
 - `Response.json()` - returns response body as JSON
 - `Response.to(t)` - converts response body to JSON and unmarshals it to type `t`
 - `Response.ok()` - returns `true` if `status` is greater than 0 and less than 400
-- 
