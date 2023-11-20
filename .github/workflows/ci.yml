@@ -23,4 +23,4 @@ jobs:
           version: binary:2.0.0
 
       - name: Test
-        run: nimble test
+        run: nimble -d:ssl test
