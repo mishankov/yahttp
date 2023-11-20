@@ -13,3 +13,6 @@ requires "nim >= 2.0.0"
 
 task docs, "Genreate docs":
     exec "nim doc src/yahttp.nim"
+
+task pretty, "Pretty":
+    exec "nimpretty src/yahttp.nim"
