@@ -16,3 +16,6 @@ task docs, "Genreate docs":
 
 task pretty, "Pretty":
     exec "nimpretty src/yahttp.nim"
+
+task examples, "Run examples":
+    exec "nim c --run examples/examples.nim "

@@ -38,7 +38,7 @@ proc toResp(response: httpclient.Response): Response =
     headers.add((headerKey, headerVal))
 
   return Response(
-    status: parseInt(response.status.strip()),
+    status: parseInt(response.status.strip()[0..2]),
     headers: headers,
     body: response.body
   )
