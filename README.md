@@ -60,7 +60,7 @@ request("http://api")
 ```
 
 Has the same arguments as method procedures and one additional:
-- `httplMethod` - HTTP method. `Method.GET` by default. Example: `Method.POST`
+- `httpMethod` - HTTP method. `Method.GET` by default. Example: `Method.POST`
 
 ## Response object
 All procedures above return `Response` object with fields:
