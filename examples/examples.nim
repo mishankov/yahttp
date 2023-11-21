@@ -10,7 +10,7 @@ for catTag in catTags[0..4]:
 
   if tag.len() > 0:
     echo "Working with tag " & tag
-    let catData = get("https://cataas.com/api/cats", queryParams = {"tags": tag, "limit": "10"})
+    let catData = get("https://cataas.com/api/cats", query = {"tags": tag, "limit": "10"})
     
     echo "===="
     echo "Response status: " & $catData.status

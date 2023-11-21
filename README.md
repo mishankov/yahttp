@@ -29,7 +29,7 @@ echo get("https://www.google.com/").status
 import json
 import yahttp
 
-let laptopsJson = get("https://dummyjson.com/products/search", queryParams = {"q": "Laptop"}).json()
+let laptopsJson = get("https://dummyjson.com/products/search", query = {"q": "Laptop"}).json()
 echo laptopsJson["products"][0]["title"].getStr()
 ```
 # API
@@ -48,7 +48,7 @@ options("http://api")
 Arguments:
 - `url` - request URL. The only required argument
 - `headers` - request HTTP headers. Example: `{"header1": "val", "header2": "val2"}`
-- `queryParams` - request query params. Example: `{"param1": "val", "param2": "val2"}`
+- `query` - request query params. Example: `{"param1": "val", "param2": "val2"}`
 - `body` - request body as a string. Example: `"{\"key\": \"value\"}\"`. Is not available for `get`, `head` and `options` procedures
 - `auth` - login and password for basic authentication. Example: `("login", "password")`
 - `ignoreSsl` - no certificate verification if `true`

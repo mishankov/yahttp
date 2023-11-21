@@ -49,13 +49,13 @@ proc basicAuthHeader(auth: BasicAuth): string =
 
 
 proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
-    Header] = [], queryParams: openArray[QueryParam] = [], body: string = "",
+    Header] = [], query: openArray[QueryParam] = [], body: string = "",
     auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   ## Genreal proc to make HTTP request with every HTTP method
 
   # Prepare client
 
-  var client: HttpClient = if ignoreSsl:
+  let client: HttpClient = if ignoreSsl:
       newHttpClient(sslContext = newContext(verifyMode = CVerifyNone))
     else:
       newHttpClient()
@@ -75,15 +75,11 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
 
   # Prepare url
 
-  var innerUrl = url
-
-  # Prepare query params
-  if queryParams.len() > 0:
-    innerUrl &= "?" & encodeQuery(queryParams, usePlus = false)
+  let innerUrl = if query.len() > 0: url & "?" & encodeQuery(query, usePlus = false) else: url
 
   # Prepare HTTP method
 
-  var innerMethod: HttpMethod = case httpMethod:
+  let innerMethod: HttpMethod = case httpMethod:
     of Method.GET: HttpGet
     of Method.PUT: HttpPut
     of Method.POST: HttpPost
@@ -102,51 +98,51 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
 
 # Deidcated procs for individual methods
 
-proc get*(url: string, headers: openArray[Header] = [], queryParams: openArray[
+proc get*(url: string, headers: openArray[Header] = [], query: openArray[
     QueryParam] = [], auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
     url = url,
     httpMethod = Method.GET,
     headers = headers,
-    queryParams = queryParams,
+    query = query,
     auth = auth,
     ignoreSsl = ignoreSsl
   )
 
-proc put*(url: string, headers: openArray[Header] = [], queryParams: openArray[
+proc put*(url: string, headers: openArray[Header] = [], query: openArray[
     QueryParam] = [], body: string = "", auth: BasicAuth = ("", ""),
     ignoreSsl = false): Response =
   return request(
     url = url,
     httpMethod = Method.PUT,
     headers = headers,
-    queryParams = queryParams,
+    query = query,
     body = body,
     auth = auth,
     ignoreSsl = ignoreSsl
   )
 
-proc post*(url: string, headers: openArray[Header] = [], queryParams: openArray[
+proc post*(url: string, headers: openArray[Header] = [], query: openArray[
     QueryParam] = [], body: string = "", auth: BasicAuth = ("", ""),
     ignoreSsl = false): Response =
   return request(
     url = url,
     httpMethod = Method.POST,
     headers = headers,
-    queryParams = queryParams,
+    query = query,
     body = body,
     auth = auth,
     ignoreSsl = ignoreSsl
   )
 
 proc patch*(url: string, headers: openArray[Header] = [],
-    queryParams: openArray[QueryParam] = [], body: string = "",
+    query: openArray[QueryParam] = [], body: string = "",
     auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
     url = url,
     httpMethod = Method.PATCH,
     headers = headers,
-    queryParams = queryParams,
+    query = query,
     body = body,
     auth = auth,
     ignoreSsl = ignoreSsl
@@ -154,37 +150,37 @@ proc patch*(url: string, headers: openArray[Header] = [],
 
 
 proc delete*(url: string, headers: openArray[Header] = [],
-    queryParams: openArray[QueryParam] = [], body: string = "",
+    query: openArray[QueryParam] = [], body: string = "",
     auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
     url = url,
     httpMethod = Method.DELETE,
     headers = headers,
-    queryParams = queryParams,
+    query = query,
     body = body,
     auth = auth,
     ignoreSsl = ignoreSsl
   )
 
-proc head*(url: string, headers: openArray[Header] = [], queryParams: openArray[
+proc head*(url: string, headers: openArray[Header] = [], query: openArray[
     QueryParam] = [], auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
     url = url,
     httpMethod = Method.HEAD,
     headers = headers,
-    queryParams = queryParams,
+    query = query,
     auth = auth,
     ignoreSsl = ignoreSsl
   )
 
 proc options*(url: string, headers: openArray[Header] = [],
-    queryParams: openArray[QueryParam] = [], auth: BasicAuth = ("", ""),
+    query: openArray[QueryParam] = [], auth: BasicAuth = ("", ""),
     ignoreSsl = false): Response =
   return request(
     url = url,
     httpMethod = Method.OPTIONS,
     headers = headers,
-    queryParams = queryParams,
+    query = query,
     auth = auth,
     ignoreSsl = ignoreSsl
   )
