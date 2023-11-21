@@ -15,6 +15,15 @@ type
     body*: string
     headers*: seq[Header]
 
+  EncodeQueryParams* = object
+    ## Paramters for encodeQuery procedure
+    usePlus*: bool
+    omitEq*: bool
+    sep*: char
+
+
+const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true, sep: '&')
+
 
 proc json*(response: Response): JsonNode =
   ## Parses response body to json
@@ -49,7 +58,7 @@ proc basicAuthHeader(auth: BasicAuth): string =
 
 
 proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
-    Header] = [], query: openArray[QueryParam] = [], body: string = "",
+    Header] = [], query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "",
     auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   ## Genreal proc to make HTTP request with every HTTP method
 
@@ -75,7 +84,7 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
 
   # Prepare url
 
-  let innerUrl = if query.len() > 0: url & "?" & encodeQuery(query, usePlus = false) else: url
+  let innerUrl = if query.len() > 0: url & "?" & encodeQuery(query, usePlus = encodeQueryParams.usePlus, omitEq = encodeQueryParams.omitEq, sep = encodeQueryParams.sep) else: url
 
   # Prepare HTTP method
 
@@ -99,7 +108,7 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
 # Deidcated procs for individual methods
 
 proc get*(url: string, headers: openArray[Header] = [], query: openArray[
-    QueryParam] = [], auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
+    QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
     url = url,
     httpMethod = Method.GET,
@@ -110,7 +119,7 @@ proc get*(url: string, headers: openArray[Header] = [], query: openArray[
   )
 
 proc put*(url: string, headers: openArray[Header] = [], query: openArray[
-    QueryParam] = [], body: string = "", auth: BasicAuth = ("", ""),
+    QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "", auth: BasicAuth = ("", ""),
     ignoreSsl = false): Response =
   return request(
     url = url,
@@ -123,7 +132,7 @@ proc put*(url: string, headers: openArray[Header] = [], query: openArray[
   )
 
 proc post*(url: string, headers: openArray[Header] = [], query: openArray[
-    QueryParam] = [], body: string = "", auth: BasicAuth = ("", ""),
+    QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "", auth: BasicAuth = ("", ""),
     ignoreSsl = false): Response =
   return request(
     url = url,
@@ -136,7 +145,7 @@ proc post*(url: string, headers: openArray[Header] = [], query: openArray[
   )
 
 proc patch*(url: string, headers: openArray[Header] = [],
-    query: openArray[QueryParam] = [], body: string = "",
+    query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "",
     auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
     url = url,
@@ -150,7 +159,7 @@ proc patch*(url: string, headers: openArray[Header] = [],
 
 
 proc delete*(url: string, headers: openArray[Header] = [],
-    query: openArray[QueryParam] = [], body: string = "",
+    query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "",
     auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
     url = url,
@@ -163,7 +172,7 @@ proc delete*(url: string, headers: openArray[Header] = [],
   )
 
 proc head*(url: string, headers: openArray[Header] = [], query: openArray[
-    QueryParam] = [], auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
+    QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
     url = url,
     httpMethod = Method.HEAD,
@@ -174,7 +183,7 @@ proc head*(url: string, headers: openArray[Header] = [], query: openArray[
   )
 
 proc options*(url: string, headers: openArray[Header] = [],
-    query: openArray[QueryParam] = [], auth: BasicAuth = ("", ""),
+    query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, auth: BasicAuth = ("", ""),
     ignoreSsl = false): Response =
   return request(
     url = url,

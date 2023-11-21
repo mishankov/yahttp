@@ -49,6 +49,7 @@ Arguments:
 - `url` - request URL. The only required argument
 - `headers` - request HTTP headers. Example: `{"header1": "val", "header2": "val2"}`
 - `query` - request query params. Example: `{"param1": "val", "param2": "val2"}`
+- `encodeQueryParams` - parameters for `encodeQuery` function that encodes query params. [More](https://nim-lang.org/docs/uri.html#encodeQuery%2CopenArray%5B%5D%2Cchar)
 - `body` - request body as a string. Example: `"{\"key\": \"value\"}\"`. Is not available for `get`, `head` and `options` procedures
 - `auth` - login and password for basic authentication. Example: `("login", "password")`
 - `ignoreSsl` - no certificate verification if `true`
