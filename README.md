@@ -8,10 +8,9 @@
 - API focused on DX
 
 # Installation
-> nimble package manager release coming soon
 
 ```shell
-nimble install https://github.com/mishankov/yahttp
+nimble install yahttp
 ```
 
 # Examples
