@@ -16,7 +16,7 @@ type
     headers*: seq[Header]
 
   EncodeQueryParams* = object
-    ## Paramters for encodeQuery procedure
+    ## Parameters for encodeQuery procedure
     usePlus*: bool
     omitEq*: bool
     sep*: char
