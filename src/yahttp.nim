@@ -1,22 +1,8 @@
 import base64, httpclient, net, json, uri, strutils
 
 type
-  BasicAuth* = tuple[login: string, password: string] ## Basic auth type
-  
-  Header* = tuple[key: string, value: string] ## Type for HTTP header
-  Headers* = seq[Header] ## Type for HTTP headers
-
+  ## Types without methods
   QueryParam* = tuple[key: string, value: string] ## Type for URL query params
-
-  Method* = enum
-    ## Supported HTTP methods
-    GET, PUT, POST, PATCH, DELETE, HEAD, OPTIONS
-
-  Response* = object
-    ## Type for HTTP response
-    status*: int
-    body*: string
-    headers*: Headers
 
   EncodeQueryParams* = object
     ## Parameters for encodeQuery procedure
@@ -24,28 +10,33 @@ type
     omitEq*: bool
     sep*: char
 
+  Method* = enum
+    ## Supported HTTP methods
+    GET, PUT, POST, PATCH, DELETE, HEAD, OPTIONS
 
-const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true, sep: '&')
 
+type  
+  BasicAuth* = tuple[login: string, password: string] ## Basic auth type
+
+proc basicAuthHeader(auth: BasicAuth): string =
+  return "Basic " & encode(auth.login & ":" & auth.password)
+
+
+type
+  Header* = tuple[key: string, value: string] ## Type for HTTP header
+  Headers* = seq[Header] ## Type for HTTP headers
 
 proc `[]`*(headers: Headers, name: string): seq[string] =
   for header in headers:
     if header.key == name: result.add(header.value)
 
-proc json*(response: Response): JsonNode =
-  ## Parses response body to json
-  return parseJson(response.body)
 
-
-proc to*[T](response: Response, t: typedesc[T]): T =
-  ## Parses response body to json and then casts it to passed type
-  return to(response.json(), t)
-
-
-proc ok*(response: Response): bool =
-  ## Is HTTP status in OK range (> 0 and < 400)?
-  return response.status > 0 and response.status < 400
-
+type
+  Response* = object
+    ## Type for HTTP response
+    status*: int
+    body*: string
+    headers*: Headers
 
 proc toResp(response: httpclient.Response): Response =
   ## Convert httpclient.Response to yahttp.Response
@@ -59,9 +50,20 @@ proc toResp(response: httpclient.Response): Response =
     body: response.body
   )
 
+proc json*(response: Response): JsonNode =
+  ## Parses response body to json
+  return parseJson(response.body)
 
-proc basicAuthHeader(auth: BasicAuth): string =
-  return "Basic " & encode(auth.login & ":" & auth.password)
+proc to*[T](response: Response, t: typedesc[T]): T =
+  ## Parses response body to json and then casts it to passed type
+  return to(response.json(), t)
+
+proc ok*(response: Response): bool =
+  ## Is HTTP status in OK range (> 0 and < 400)?
+  return response.status > 0 and response.status < 400
+
+
+const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true, sep: '&')
 
 
 proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
