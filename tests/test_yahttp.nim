@@ -11,12 +11,3 @@ test "OK response":
 
 test "Not OK response":
   check not Response(status: 404).ok()
-
-test "Iterate over headers":
-  const headers = [("header-1", @["value-1", "value-2"]), ("header-2", @["value-3"])]
-
-  let headersTable: Headers = newTable(headers)
-  var headersSeq: seq[Header] = @[]
-  for header in headersTable: headersSeq.add(header)
-
-  check headersSeq == @[("header-1", "value-1"), ("header-1", "value-2"), ("header-2", "value-3")]
