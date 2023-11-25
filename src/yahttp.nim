@@ -27,7 +27,6 @@ type
     ## Type to store request infornation in response
     url*: string
     headers*: seq[tuple[key: string, val: string]]
-    body*: string
 
   Response* = object
     ## Type for HTTP response
@@ -36,13 +35,13 @@ type
     headers*: TableRef[string, seq[string]]
     request*: Request
 
-proc toResp(response: httpclient.Response, requestUrl: string, requestHeaders: seq[tuple[key: string, val: string]], requestBody: string): Response =
+proc toResp(response: httpclient.Response, requestUrl: string, requestHeaders: seq[tuple[key: string, val: string]]): Response =
   ## Convert httpclient.Response to yahttp.Response
   return Response(
     status: parseInt(response.status.strip()[0..2]),
     headers: response.headers.table,
     body: response.body,
-    request: Request(url: requestUrl, headers: requestHeaders, body: requestBody)
+    request: Request(url: requestUrl, headers: requestHeaders)
   )
 
 proc json*(response: Response): JsonNode =
@@ -106,7 +105,7 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
   let response = client.request(innerUrl, httpMethod = innerMethod, body = body)
   client.close()
 
-  return response.toResp(requestUrl = innerUrl, requestHeaders = innerHeaders, requestBody = body)
+  return response.toResp(requestUrl = innerUrl, requestHeaders = innerHeaders)
 
 
 # Deidcated procs for individual methods
