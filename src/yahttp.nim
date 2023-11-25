@@ -1,64 +1,60 @@
-import base64, httpclient, net, json, uri, strutils
+import base64, httpclient, net, json, uri, strutils, tables
 
 type
-  BasicAuth* = tuple[login: string, password: string] ## Basic auth type
-  Header* = tuple[key: string, value: string] ## Type for HTTP header
+  ## Types without methods
   QueryParam* = tuple[key: string, value: string] ## Type for URL query params
+  RequestHeader* = tuple[key: string, value: string] ## Type for HTTP header
+
+  EncodeQueryParams* = object
+    ## Parameters for encodeQuery procedure
+    usePlus*: bool
+    omitEq*: bool
+    sep*: char
 
   Method* = enum
     ## Supported HTTP methods
     GET, PUT, POST, PATCH, DELETE, HEAD, OPTIONS
 
+
+type  
+  BasicAuth* = tuple[login: string, password: string] ## Basic auth type
+
+proc basicAuthHeader(auth: BasicAuth): string =
+  return "Basic " & encode(auth.login & ":" & auth.password)
+
+type
   Response* = object
     ## Type for HTTP response
     status*: int
     body*: string
-    headers*: seq[Header]
+    headers*: TableRef[string, seq[string]]
 
-  EncodeQueryParams* = object
-    ## Paramters for encodeQuery procedure
-    usePlus*: bool
-    omitEq*: bool
-    sep*: char
-
-
-const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true, sep: '&')
-
+proc toResp(response: httpclient.Response): Response =
+  ## Convert httpclient.Response to yahttp.Response
+  return Response(
+    status: parseInt(response.status.strip()[0..2]),
+    headers: response.headers.table,
+    body: response.body
+  )
 
 proc json*(response: Response): JsonNode =
   ## Parses response body to json
   return parseJson(response.body)
 
-
 proc to*[T](response: Response, t: typedesc[T]): T =
   ## Parses response body to json and then casts it to passed type
   return to(response.json(), t)
-
 
 proc ok*(response: Response): bool =
   ## Is HTTP status in OK range (> 0 and < 400)?
   return response.status > 0 and response.status < 400
 
 
-proc toResp(response: httpclient.Response): Response =
-  ## Convert httpclient.Response to yahttp.Response
-  var headers: seq[Header] = @[]
-  for headerKey, headerVal in response.headers:
-    headers.add((headerKey, headerVal))
-
-  return Response(
-    status: parseInt(response.status.strip()[0..2]),
-    headers: headers,
-    body: response.body
-  )
-
-
-proc basicAuthHeader(auth: BasicAuth): string =
-  return "Basic " & encode(auth.login & ":" & auth.password)
+const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true, sep: '&')
 
 
 proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
-    Header] = [], query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "",
+    RequestHeader] = [], query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "",
     auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   ## Genreal proc to make HTTP request with every HTTP method
 
@@ -107,7 +103,7 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
 
 # Deidcated procs for individual methods
 
-proc get*(url: string, headers: openArray[Header] = [], query: openArray[
+proc get*(url: string, headers: openArray[RequestHeader] = [], query: openArray[
     QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
     url = url,
@@ -118,7 +114,7 @@ proc get*(url: string, headers: openArray[Header] = [], query: openArray[
     ignoreSsl = ignoreSsl
   )
 
-proc put*(url: string, headers: openArray[Header] = [], query: openArray[
+proc put*(url: string, headers: openArray[RequestHeader] = [], query: openArray[
     QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "", auth: BasicAuth = ("", ""),
     ignoreSsl = false): Response =
   return request(
@@ -131,7 +127,7 @@ proc put*(url: string, headers: openArray[Header] = [], query: openArray[
     ignoreSsl = ignoreSsl
   )
 
-proc post*(url: string, headers: openArray[Header] = [], query: openArray[
+proc post*(url: string, headers: openArray[RequestHeader] = [], query: openArray[
     QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "", auth: BasicAuth = ("", ""),
     ignoreSsl = false): Response =
   return request(
@@ -144,7 +140,7 @@ proc post*(url: string, headers: openArray[Header] = [], query: openArray[
     ignoreSsl = ignoreSsl
   )
 
-proc patch*(url: string, headers: openArray[Header] = [],
+proc patch*(url: string, headers: openArray[RequestHeader] = [],
     query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "",
     auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
@@ -158,7 +154,7 @@ proc patch*(url: string, headers: openArray[Header] = [],
   )
 
 
-proc delete*(url: string, headers: openArray[Header] = [],
+proc delete*(url: string, headers: openArray[RequestHeader] = [],
     query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "",
     auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
@@ -171,7 +167,7 @@ proc delete*(url: string, headers: openArray[Header] = [],
     ignoreSsl = ignoreSsl
   )
 
-proc head*(url: string, headers: openArray[Header] = [], query: openArray[
+proc head*(url: string, headers: openArray[RequestHeader] = [], query: openArray[
     QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   return request(
     url = url,
@@ -182,7 +178,7 @@ proc head*(url: string, headers: openArray[Header] = [], query: openArray[
     ignoreSsl = ignoreSsl
   )
 
-proc options*(url: string, headers: openArray[Header] = [],
+proc options*(url: string, headers: openArray[RequestHeader] = [],
     query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, auth: BasicAuth = ("", ""),
     ignoreSsl = false): Response =
   return request(

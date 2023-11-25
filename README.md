@@ -66,7 +66,7 @@ Has the same arguments as method procedures and one additional:
 All procedures above return `Response` object with fields:
 - `status` - HTTP status code
 - `body` - response body as a string
-- `headers` - sequence of response headers
+- `headers` - table, where keys are header keys and values are sequences of header values for a key
 
 `Response` object has some helper procedures:
 - `Response.json()` - returns response body as JSON
