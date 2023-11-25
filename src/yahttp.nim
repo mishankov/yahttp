@@ -2,7 +2,10 @@ import base64, httpclient, net, json, uri, strutils
 
 type
   BasicAuth* = tuple[login: string, password: string] ## Basic auth type
+  
   Header* = tuple[key: string, value: string] ## Type for HTTP header
+  Headers* = seq[Header] ## Type for HTTP headers
+
   QueryParam* = tuple[key: string, value: string] ## Type for URL query params
 
   Method* = enum
@@ -13,7 +16,7 @@ type
     ## Type for HTTP response
     status*: int
     body*: string
-    headers*: seq[Header]
+    headers*: Headers
 
   EncodeQueryParams* = object
     ## Parameters for encodeQuery procedure
@@ -24,6 +27,10 @@ type
 
 const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true, sep: '&')
 
+
+proc `[]`*(headers: Headers, name: string): seq[string] =
+  for header in headers:
+    if header.key == name: result.add(header.value)
 
 proc json*(response: Response): JsonNode =
   ## Parses response body to json
@@ -42,7 +49,7 @@ proc ok*(response: Response): bool =
 
 proc toResp(response: httpclient.Response): Response =
   ## Convert httpclient.Response to yahttp.Response
-  var headers: seq[Header] = @[]
+  var headers: Headers = @[]
   for headerKey, headerVal in response.headers:
     headers.add((headerKey, headerVal))
 
