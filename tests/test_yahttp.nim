@@ -1,4 +1,5 @@
 import unittest
+import tables
 
 include yahttp
 
@@ -11,12 +12,11 @@ test "OK response":
 test "Not OK response":
   check not Response(status: 404).ok()
 
-test "Multiple headers by key":
-  const header1: Header = ("header-1", "value-1")
-  const header12: Header = ("header-1", "value-2")
-  const header2: Header = ("header-2", "value-3")
+test "Iterate over headers":
+  const headers = [("header-1", @["value-1", "value-2"]), ("header-2", @["value-3"])]
 
-  const headers: Headers = @[header1, header12, header2]
+  let headersTable: Headers = newTable(headers)
+  var headersSeq: seq[Header] = @[]
+  for header in headersTable: headersSeq.add(header)
 
-  check headers["header-1"] == @["value-1", "value-2"]
-  check headers["header-2"] == @["value-3"]
+  check headersSeq == @[("header-1", "value-1"), ("header-1", "value-2"), ("header-2", "value-3")]

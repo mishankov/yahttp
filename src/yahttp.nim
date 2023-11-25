@@ -1,4 +1,4 @@
-import base64, httpclient, net, json, uri, strutils
+import base64, httpclient, net, json, uri, strutils, tables
 
 type
   ## Types without methods
@@ -24,12 +24,12 @@ proc basicAuthHeader(auth: BasicAuth): string =
 
 type
   Header* = tuple[key: string, value: string] ## Type for HTTP header
-  Headers* = seq[Header] ## Type for HTTP headers
+  Headers* = TableRef[string, seq[string]] ## Type for HTTP headers
 
-proc `[]`*(headers: Headers, name: string): seq[string] =
-  for header in headers:
-    if header.key == name: result.add(header.value)
-
+iterator items*(headers: Headers): Header =
+  for key in headers.keys():
+    for value in headers[key]:
+      yield (key, value)
 
 type
   Response* = object
@@ -40,13 +40,9 @@ type
 
 proc toResp(response: httpclient.Response): Response =
   ## Convert httpclient.Response to yahttp.Response
-  var headers: Headers = @[]
-  for headerKey, headerVal in response.headers:
-    headers.add((headerKey, headerVal))
-
   return Response(
     status: parseInt(response.status.strip()[0..2]),
-    headers: headers,
+    headers: response.headers.table,
     body: response.body
   )
 
