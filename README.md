@@ -50,7 +50,7 @@ Arguments:
 - `query` - request query params. Example: `{"param1": "val", "param2": "val2"}`
 - `encodeQueryParams` - parameters for `encodeQuery` function that encodes query params. [More](https://nim-lang.org/docs/uri.html#encodeQuery%2CopenArray%5B%5D%2Cchar)
 - `body` - request body as a string. Example: `"{\"key\": \"value\"}\"`. Is not available for `get`, `head` and `options` procedures
-- `auth` - login and password for basic authentication. Example: `("login", "password")`
+- `auth` - login and password for basic authorization. Example: `("login", "password")`
 - `ignoreSsl` - no certificate verification if `true`
 
 ## General procedure
@@ -67,6 +67,9 @@ All procedures above return `Response` object with fields:
 - `status` - HTTP status code
 - `body` - response body as a string
 - `headers` - table, where keys are header keys and values are sequences of header values for a key
+- `request` - object with request data processed by `yahttp`
+  - `url` - stores full url with query params
+  - `headers` - stores HTTP headers with `Authorization` for basic authorization
 
 `Response` object has some helper procedures:
 - `Response.json()` - returns response body as JSON
