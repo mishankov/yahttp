@@ -13,6 +13,7 @@ for catTag in catTags[0..4]:
     echo "Working with tag " & tag
     let catData = get("https://cataas.com/api/cats", query = {"tags": tag, "limit": "10"})
     
-    echo "Response status: " & $catData.status
+    echo "Request URL: ", catData.request.url
+    echo "Response status: ", catData.status
     echo "Response headers: ", catData.headers
-    echo "Response body: " & catData.body
+    echo "Response body: ", catData.body
