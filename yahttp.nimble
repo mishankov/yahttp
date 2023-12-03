@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.5.1"
+version       = "0.6.0"
 author        = "Denis Mishankov"
 description   = "Awesome simple HTTP client"
 license       = "MIT"
