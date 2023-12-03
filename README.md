@@ -51,6 +51,7 @@ Arguments:
 - `encodeQueryParams` - parameters for `encodeQuery` function that encodes query params. [More](https://nim-lang.org/docs/uri.html#encodeQuery%2CopenArray%5B%5D%2Cchar)
 - `body` - request body as a string. Example: `"{\"key\": \"value\"}\"`. Is not available for `get`, `head` and `options` procedures
 - `auth` - login and password for basic authorization. Example: `("login", "password")`
+- `timeout` - stop waiting for a response after a given number of milliseconds 
 - `ignoreSsl` - no certificate verification if `true`
 
 ## General procedure
