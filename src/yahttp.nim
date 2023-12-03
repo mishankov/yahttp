@@ -40,7 +40,7 @@ type
 
 proc toResp(response: httpclient.Response, requestUrl: string,
     requestHeaders: seq[tuple[key: string, val: string]], requestHttpMethod: Method): Response =
-  ## Convert httpclient.Response to yahttp.Response
+  ## Converts httpclient.Response to yahttp.Response
   return Response(
     status: parseInt(response.status.strip()[0..2]),
     headers: response.headers.table,
