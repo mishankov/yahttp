@@ -29,6 +29,7 @@ type
     ## Type to store request infornation in response
     url*: string
     headers*: seq[tuple[key: string, val: string]]
+    httpMethod*: Method
 
   Response* = object
     ## Type for HTTP response
@@ -38,13 +39,13 @@ type
     request*: Request
 
 proc toResp(response: httpclient.Response, requestUrl: string,
-    requestHeaders: seq[tuple[key: string, val: string]]): Response =
+    requestHeaders: seq[tuple[key: string, val: string]], requestHttpMethod: Method): Response =
   ## Convert httpclient.Response to yahttp.Response
   return Response(
     status: parseInt(response.status.strip()[0..2]),
     headers: response.headers.table,
     body: response.body,
-    request: Request(url: requestUrl, headers: requestHeaders)
+    request: Request(url: requestUrl, headers: requestHeaders, httpMethod: requestHttpMethod)
   )
 
 proc json*(response: Response): JsonNode =
@@ -112,7 +113,7 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
   let response = client.request(innerUrl, httpMethod = innerMethod, body = body)
   client.close()
 
-  return response.toResp(requestUrl = innerUrl, requestHeaders = innerHeaders)
+  return response.toResp(requestUrl = innerUrl, requestHeaders = innerHeaders, requestHttpMethod = httpMethod)
 
 
 # Gnerating procs for individual HTTP methods
