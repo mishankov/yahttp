@@ -26,7 +26,7 @@ proc basicAuthHeader(auth: BasicAuth): string =
 
 type
   Request* = object
-    ## Type to store request infornation in response
+    ## Type to store request information in response
     url*: string
     headers*: seq[tuple[key: string, val: string]]
     httpMethod*: Method
