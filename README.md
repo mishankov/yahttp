@@ -70,6 +70,7 @@ All procedures above return `Response` object with fields:
 - `request` - object with request data processed by `yahttp`
   - `url` - stores full url with query params
   - `headers` - stores HTTP headers with `Authorization` for basic authorization
+  - `httpMethod` - HTTP method
 
 `Response` object has some helper procedures:
 - `Response.json()` - returns response body as JSON

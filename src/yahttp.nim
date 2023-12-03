@@ -1,5 +1,7 @@
 import base64, httpclient, net, json, uri, strutils, tables
 
+import yahttp/internal/utils
+
 type
   ## Types without methods
   QueryParam* = tuple[key: string, value: string] ## Type for URL query params
@@ -16,7 +18,7 @@ type
     GET, PUT, POST, PATCH, DELETE, HEAD, OPTIONS
 
 
-type  
+type
   BasicAuth* = tuple[login: string, password: string] ## Basic auth type
 
 proc basicAuthHeader(auth: BasicAuth): string =
@@ -27,6 +29,7 @@ type
     ## Type to store request infornation in response
     url*: string
     headers*: seq[tuple[key: string, val: string]]
+    httpMethod*: Method
 
   Response* = object
     ## Type for HTTP response
@@ -35,13 +38,14 @@ type
     headers*: TableRef[string, seq[string]]
     request*: Request
 
-proc toResp(response: httpclient.Response, requestUrl: string, requestHeaders: seq[tuple[key: string, val: string]]): Response =
+proc toResp(response: httpclient.Response, requestUrl: string,
+    requestHeaders: seq[tuple[key: string, val: string]], requestHttpMethod: Method): Response =
   ## Convert httpclient.Response to yahttp.Response
   return Response(
     status: parseInt(response.status.strip()[0..2]),
     headers: response.headers.table,
     body: response.body,
-    request: Request(url: requestUrl, headers: requestHeaders)
+    request: Request(url: requestUrl, headers: requestHeaders, httpMethod: requestHttpMethod)
   )
 
 proc json*(response: Response): JsonNode =
@@ -61,7 +65,9 @@ const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true,
 
 
 proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
-    RequestHeader] = [], query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "",
+    RequestHeader] = [], query: openArray[QueryParam] = [],
+        encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams,
+        body: string = "",
     auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
   ## Genreal proc to make HTTP request with every HTTP method
 
@@ -87,7 +93,9 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
 
   # Prepare url
 
-  let innerUrl = if query.len() > 0: url & "?" & encodeQuery(query, usePlus = encodeQueryParams.usePlus, omitEq = encodeQueryParams.omitEq, sep = encodeQueryParams.sep) else: url
+  let innerUrl = if query.len() > 0: url & "?" & encodeQuery(query,
+      usePlus = encodeQueryParams.usePlus, omitEq = encodeQueryParams.omitEq,
+      sep = encodeQueryParams.sep) else: url
 
   # Prepare HTTP method
 
@@ -105,94 +113,15 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
   let response = client.request(innerUrl, httpMethod = innerMethod, body = body)
   client.close()
 
-  return response.toResp(requestUrl = innerUrl, requestHeaders = innerHeaders)
+  return response.toResp(requestUrl = innerUrl, requestHeaders = innerHeaders, requestHttpMethod = httpMethod)
 
 
-# Deidcated procs for individual methods
+# Gnerating procs for individual HTTP methods
 
-proc get*(url: string, headers: openArray[RequestHeader] = [], query: openArray[
-    QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
-  return request(
-    url = url,
-    httpMethod = Method.GET,
-    headers = headers,
-    query = query,
-    auth = auth,
-    ignoreSsl = ignoreSsl
-  )
-
-proc put*(url: string, headers: openArray[RequestHeader] = [], query: openArray[
-    QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "", auth: BasicAuth = ("", ""),
-    ignoreSsl = false): Response =
-  return request(
-    url = url,
-    httpMethod = Method.PUT,
-    headers = headers,
-    query = query,
-    body = body,
-    auth = auth,
-    ignoreSsl = ignoreSsl
-  )
-
-proc post*(url: string, headers: openArray[RequestHeader] = [], query: openArray[
-    QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "", auth: BasicAuth = ("", ""),
-    ignoreSsl = false): Response =
-  return request(
-    url = url,
-    httpMethod = Method.POST,
-    headers = headers,
-    query = query,
-    body = body,
-    auth = auth,
-    ignoreSsl = ignoreSsl
-  )
-
-proc patch*(url: string, headers: openArray[RequestHeader] = [],
-    query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "",
-    auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
-  return request(
-    url = url,
-    httpMethod = Method.PATCH,
-    headers = headers,
-    query = query,
-    body = body,
-    auth = auth,
-    ignoreSsl = ignoreSsl
-  )
-
-
-proc delete*(url: string, headers: openArray[RequestHeader] = [],
-    query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "",
-    auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
-  return request(
-    url = url,
-    httpMethod = Method.DELETE,
-    headers = headers,
-    query = query,
-    body = body,
-    auth = auth,
-    ignoreSsl = ignoreSsl
-  )
-
-proc head*(url: string, headers: openArray[RequestHeader] = [], query: openArray[
-    QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, auth: BasicAuth = ("", ""), ignoreSsl = false): Response =
-  return request(
-    url = url,
-    httpMethod = Method.HEAD,
-    headers = headers,
-    query = query,
-    auth = auth,
-    ignoreSsl = ignoreSsl
-  )
-
-proc options*(url: string, headers: openArray[RequestHeader] = [],
-    query: openArray[QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, auth: BasicAuth = ("", ""),
-    ignoreSsl = false): Response =
-  return request(
-    url = url,
-    httpMethod = Method.OPTIONS,
-    headers = headers,
-    query = query,
-    auth = auth,
-    ignoreSsl = ignoreSsl
-  )
+http_method_no_body_gen get
+http_method_no_body_gen head
+http_method_no_body_gen options
+http_method_gen put
+http_method_gen post
+http_method_gen patch
+http_method_gen delete
