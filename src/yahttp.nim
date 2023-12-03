@@ -115,7 +115,7 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
   return response.toResp(requestUrl = innerUrl, requestHeaders = innerHeaders)
 
 
-# Deidcated procs for individual methods
+# Gnerating procs for individual HTTP methods
 
 http_method_no_body_gen get
 http_method_no_body_gen head
