@@ -11,3 +11,10 @@ test "OK response":
 
 test "Not OK response":
   check not Response(status: 404).ok()
+
+test "Exception for 4xx and 5xx":
+  expect HttpError:
+    Response(status: 400).raiseForStatus()
+
+  expect HttpError:
+    Response(status: 599).raiseForStatus()

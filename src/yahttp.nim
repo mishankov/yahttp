@@ -1,6 +1,7 @@
 import base64, httpclient, net, json, uri, strutils, tables
 
 import yahttp/internal/utils
+import yahttp/exceptions
 
 type
   ## Types without methods
@@ -59,6 +60,10 @@ proc to*[T](response: Response, t: typedesc[T]): T =
 proc ok*(response: Response): bool =
   ## Is HTTP status in OK range (> 0 and < 400)?
   return response.status > 0 and response.status < 400
+
+proc raiseForStatus*(response: Response) {.raises: [HttpError].} = 
+  ## Throws `HttpError` exceptions if status is 400 or above
+  if response.status >= 400: raise HttpError.newException("Status is: " & $response.status)
 
 
 const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true, sep: '&')
