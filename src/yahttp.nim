@@ -40,13 +40,15 @@ type
     request*: Request
 
 proc toResp(response: httpclient.Response, requestUrl: string,
-    requestHeaders: seq[tuple[key: string, val: string]], requestHttpMethod: Method): Response =
+    requestHeaders: seq[tuple[key: string, val: string]],
+        requestHttpMethod: Method): Response =
   ## Converts httpclient.Response to yahttp.Response
   return Response(
     status: parseInt(response.status.strip()[0..2]),
     headers: response.headers.table,
     body: response.body,
-    request: Request(url: requestUrl, headers: requestHeaders, httpMethod: requestHttpMethod)
+    request: Request(url: requestUrl, headers: requestHeaders,
+        httpMethod: requestHttpMethod)
   )
 
 proc json*(response: Response): JsonNode =
@@ -61,9 +63,10 @@ proc ok*(response: Response): bool =
   ## Is HTTP status in OK range (> 0 and < 400)?
   return response.status > 0 and response.status < 400
 
-proc raiseForStatus*(response: Response) {.raises: [HttpError].} = 
+proc raiseForStatus*(response: Response) {.raises: [HttpError].} =
   ## Throws `HttpError` exceptions if status is 400 or above
-  if response.status >= 400: raise HttpError.newException("Status is: " & $response.status)
+  if response.status >= 400: raise HttpError.newException("Status is: " &
+      $response.status)
 
 
 const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true, sep: '&')
@@ -79,7 +82,8 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
   # Prepare client
 
   let client: HttpClient = if ignoreSsl:
-      newHttpClient(timeout = timeout, sslContext = newContext(verifyMode = CVerifyNone))
+      newHttpClient(timeout = timeout, sslContext = newContext(
+          verifyMode = CVerifyNone))
     else:
       newHttpClient(timeout = timeout)
 
@@ -118,7 +122,8 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
   let response = client.request(innerUrl, httpMethod = innerMethod, body = body)
   client.close()
 
-  return response.toResp(requestUrl = innerUrl, requestHeaders = innerHeaders, requestHttpMethod = httpMethod)
+  return response.toResp(requestUrl = innerUrl, requestHeaders = innerHeaders,
+      requestHttpMethod = httpMethod)
 
 
 # Gnerating procs for individual HTTP methods
