@@ -49,7 +49,7 @@ Arguments:
 - `headers` - request HTTP headers. Example: `{"header1": "val", "header2": "val2"}`
 - `query` - request query params. Example: `{"param1": "val", "param2": "val2"}`
 - `encodeQueryParams` - parameters for `encodeQuery` function that encodes query params. [More](https://nim-lang.org/docs/uri.html#encodeQuery%2CopenArray%5B%5D%2Cchar)
-- `body` - request body as a string. Example: `"{\"key\": \"value\"}\"`. Is not available for `get`, `head` and `options` procedures
+- `body` - request body as a string. Example: `"{\"key\": \"value\"}"`. Is not available for `get`, `head` and `options` procedures
 - `auth` - login and password for basic authorization. Example: `("login", "password")`
 - `timeout` - stop waiting for a response after a given number of milliseconds. `-1` for no timeout, which is default value
 - `ignoreSsl` - no certificate verification if `true`
