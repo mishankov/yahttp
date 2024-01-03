@@ -15,20 +15,15 @@ jobs:
     strategy: 
       matrix:
         os: [ ubuntu-latest, macOS-latest, windows-latest ]
-        nim-version: [ "binary:2.0.0", "binary:2.0.2" ]
+        nim-version: [ "2.0.0", "2.0.2" ]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
-      # - name: Install nim
-      #   uses: iffy/install-nim@v4
-      #   with:
-      #     version: binary:2.0.2
 
       - uses: jiro4989/setup-nim-action@v1
         with:
-          nim-version: '2.0.2' # default is 'stable'
+          nim-version: ${{ matrix.nim-version }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Test
