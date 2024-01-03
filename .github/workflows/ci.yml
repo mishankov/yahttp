@@ -24,7 +24,7 @@ jobs:
       - name: Install nim
         uses: iffy/install-nim@v4
         with:
-          version: ${{ matrix.nim-version }}
+          version: binary:2.0.2
 
       - name: Test
         run: nimble -d:ssl test
