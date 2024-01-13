@@ -1,5 +1,4 @@
 import unittest
-import tables
 
 include yahttp
 
