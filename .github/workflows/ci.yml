@@ -27,4 +27,4 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Test
-        run: nimble -d:ssl test
+        run: nimble unittests

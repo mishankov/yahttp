@@ -18,4 +18,7 @@ task pretty, "Pretty":
     exec "nimpretty src/yahttp.nim"
 
 task examples, "Run examples":
-    exec "nim c --run examples/examples.nim "
+    exec "nim c --run examples/examples.nim"
+
+task unittests, "Run unit tests":
+    exec "testament pattern \"tests/unit/*.nim\""
