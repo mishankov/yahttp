@@ -30,4 +30,6 @@ jobs:
         run: nimble unittests
 
       - name: Run integation tests
+        # go-httpbin container does not run on windows runner for some reason
+        if: ${{ matrix.os != 'windows-latest' }} 
         run: nimble inttests
