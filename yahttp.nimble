@@ -24,7 +24,7 @@ task unittests, "Run unit tests":
     exec "testament pattern \"tests/unit/*.nim\""
 
 task inttests, "Run integation tests":
-    exec "docker run -d --name yahttp-httpbin -p 8080:8080 mccutchen/go-httpbin" 
+    exec "docker run --platform=linux -d --name yahttp-httpbin -p 8080:8080 mccutchen/go-httpbin" 
     exec "testament pattern \"tests/int/*.nim\""
     exec "docker stop yahttp-httpbin"
     exec "docker remove yahttp-httpbin"
