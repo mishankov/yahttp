@@ -29,6 +29,10 @@ jobs:
       - name: Run unit tests
         run: nimble unittests
 
+      - name: Setup docker
+        if: ${{ matrix.os == 'macos-latest' }} 
+        uses: docker-practice/actions-setup-docker@master
+
       - name: Run integation tests
         # go-httpbin container does not run on windows runner for some reason
         if: ${{ matrix.os != 'windows-latest' }} 
