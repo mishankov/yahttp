@@ -26,5 +26,8 @@ jobs:
           nim-version: ${{ matrix.nim-version }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Test
+      - name: Run unit tests
         run: nimble unittests
+
+      - name: Run integation tests
+        run: nimble inttests
