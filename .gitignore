@@ -4,3 +4,6 @@ htmldocs/
 
 *.exe
 nim.cfg
+
+testresults/
+testresults.html

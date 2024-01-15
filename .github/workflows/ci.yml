@@ -26,5 +26,10 @@ jobs:
           nim-version: ${{ matrix.nim-version }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Test
-        run: nimble -d:ssl test
+      - name: Run unit tests
+        run: nimble unittests
+
+      - name: Run integation tests
+        # go-httpbin container does not run on windows runner for some reason. macos runner does not has docker by default
+        if: ${{ matrix.os == 'ubuntu-latest' }} 
+        run: nimble inttests
