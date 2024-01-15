@@ -72,6 +72,7 @@ All procedures above return `Response` object with fields:
   - `url` - stores full url with query params
   - `headers` - stores HTTP headers with `Authorization` for basic authorization
   - `httpMethod` - HTTP method
+  - `body` - request body as a string
 
 `Response` object has some helper procedures:
 - `Response.json()` - returns response body as JSON
