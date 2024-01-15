@@ -1,10 +1,40 @@
 import unittest
+import json
 
 include yahttp
 
 
+const BASE_URL = "http://localhost:8080"
+
+test "Test HTTP methods":
+  check put(BASE_URL & "/put").ok()
+  check post(BASE_URL & "/post").ok()
+  check patch(BASE_URL & "/patch").ok()
+  check delete(BASE_URL & "/delete").ok()
+
 test "Test query params":
-  let jsonResp = get("http://localhost:8080/get", query = {"param1": "value1", "param2": "value2"}).json()
+  let jsonResp = get(BASE_URL & "/get", query={"param1": "value1", "param2": "value2"}).json()
 
   check jsonResp["args"]["param1"][0].getStr() == "value1"
   check jsonResp["args"]["param2"][0].getStr() == "value2"
+
+test "Test headers":
+  let jsonResp = get(BASE_URL & "/headers", headers={"header1": "value1", "header2": "value2"}).json()
+
+  check jsonResp["headers"]["Header1"][0].getStr() == "value1"
+  check jsonResp["headers"]["Header2"][0].getStr() == "value2"
+
+test "Test auth header":
+  let jsonResp = get(BASE_URL & "/headers", auth=("test login", "test_pass")).json()
+
+  check jsonResp["headers"]["Authorization"][0].getStr() == "Basic dGVzdCBsb2dpbjp0ZXN0X3Bhc3M="
+
+test "Test body":
+  let jsonResp = put(BASE_URL & "/put", headers = {"Content-Type": "text/plain"}, body = "some body").json()
+
+  check jsonResp["data"].getStr() == "some body"
+
+test "Test JSON body":
+  let jsonResp = put(BASE_URL & "/put", headers = {"Content-Type": "application/json"}, body = $ %*{"key": "value"}).json()
+
+  check jsonResp["json"]["key"].getStr() == "value"
