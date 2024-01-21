@@ -18,3 +18,9 @@ test "Exception for 4xx and 5xx":
 
   expect HttpError:
     Response(status: 599).raiseForStatus()
+
+test "Convert to object":
+  type T = object
+    key: string
+
+  check Response(status: 200, body: "{\"key\": \"value\"}").to(T) == T(key: "value")
