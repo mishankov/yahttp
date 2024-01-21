@@ -38,3 +38,10 @@ test "Test JSON body":
   let jsonResp = put(BASE_URL & "/put", headers = {"Content-Type": "application/json"}, body = $ %*{"key": "value"}).json()
 
   check jsonResp["json"]["key"].getStr() == "value"
+
+test "Test timeout":
+  expect TimeoutError:
+    discard get(BASE_URL & "/delay/5", timeout = 100)
+
+  # No exception
+  discard get(BASE_URL & "/delay/5", timeout = -1)

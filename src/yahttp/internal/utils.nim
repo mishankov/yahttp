@@ -16,6 +16,7 @@ macro http_method_gen*(name: untyped): untyped =
         query = query,
         body = body,
         auth = auth,
+        timeout = timeout,
         ignoreSsl = ignoreSsl
       )
 
@@ -34,5 +35,6 @@ macro http_method_no_body_gen*(name: untyped): untyped =
         headers = headers,
         query = query,
         auth = auth,
+        timeout = timeout,
         ignoreSsl = ignoreSsl
       )
