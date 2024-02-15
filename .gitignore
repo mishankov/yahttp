@@ -7,3 +7,5 @@ nim.cfg
 
 testresults/
 testresults.html
+
+test_yahttp

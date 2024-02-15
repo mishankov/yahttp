@@ -76,5 +76,6 @@ All procedures above return `Response` object with fields:
 
 `Response` object has some helper procedures:
 - `Response.json()` - returns response body as JSON
+- `Response.html()` - returns response body as HTML
 - `Response.to(t)` - converts response body to JSON and unmarshals it to type `t`
 - `Response.ok()` - returns `true` if `status` is greater than 0 and less than 400
