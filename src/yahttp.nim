@@ -1,4 +1,4 @@
-import base64, httpclient, net, json, uri, strutils, tables
+import base64, httpclient, net, json, uri, strutils, tables, htmlparser, xmltree
 
 import yahttp/internal/utils
 import yahttp/exceptions
@@ -55,6 +55,10 @@ proc toResp(response: httpclient.Response, requestUrl: string,
 proc json*(response: Response): JsonNode =
   ## Parses response body to json
   return parseJson(response.body)
+
+proc html*(response: Response): XmlNode =
+  ## Parses response body to html
+  return parseHtml(response.body)
 
 proc to*[T](response: Response, t: typedesc[T]): T =
   ## Parses response body to json and then casts it to passed type
