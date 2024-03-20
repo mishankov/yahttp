@@ -74,8 +74,9 @@ proc raiseForStatus*(response: Response) {.raises: [HttpError].} =
       $response.status)
 
 
-proc toJson*(body: object): string =
-  return $ %*body
+proc toJson*(obj: object): string =
+  ## Converts object of any type to json. Helpful to use for `body` argument
+  return $ %*obj
 
 
 const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true, sep: '&')
