@@ -74,6 +74,10 @@ proc raiseForStatus*(response: Response) {.raises: [HttpError].} =
       $response.status)
 
 
+proc toJson*(body: object): string =
+  return $ %*body
+
+
 const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true, sep: '&')
 
 

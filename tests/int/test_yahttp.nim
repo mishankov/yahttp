@@ -39,6 +39,16 @@ test "Test JSON body":
 
   check jsonResp["json"]["key"].getStr() == "value"
 
+test "Test body with toJson helper":
+  type TestReq = object
+    field1: string
+    field2: int
+
+  let jsonResp = put(BASE_URL & "/put", headers = {"Content-Type": "application/json"}, body = TestReq(field1: "value1", field2: 123).toJson()).json()
+
+  check jsonResp["json"]["field1"].getStr() == "value1"
+  check jsonResp["json"]["field2"].getInt() == 123
+
 test "Test timeout":
   expect TimeoutError:
     discard get(BASE_URL & "/delay/5", timeout = 100)
