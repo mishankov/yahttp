@@ -44,7 +44,7 @@ test "Test body with toJson helper":
     field1: string
     field2: int
 
-  let jsonResp = put(BASE_URL & "/put", headers = {"Content-Type": "application/json"}, body = TestReq(field1: "value1", field2: 123).toJson()).json()
+  let jsonResp = put(BASE_URL & "/put", headers = {"Content-Type": "application/json"}, body = TestReq(field1: "value1", field2: 123).toJsonString()).json()
 
   check jsonResp["json"]["field1"].getStr() == "value1"
   check jsonResp["json"]["field2"].getInt() == 123
