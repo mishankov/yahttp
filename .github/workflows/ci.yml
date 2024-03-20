@@ -3,6 +3,7 @@ name: CI
 on:
   push: 
     branches: [ main ]
+    tags: ["v*.*.*"]
   pull_request: 
     branches: [ main ]
 
@@ -33,3 +34,41 @@ jobs:
         # go-httpbin container does not run on windows runner for some reason. macos runner does not has docker by default
         if: ${{ matrix.os == 'ubuntu-latest' }} 
         run: nimble inttests
+
+  deploy-docs:
+    needs:
+    - build
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    if: github.event_name == 'release' && github.event.action == 'created'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: jiro4989/setup-nim-action@v1
+        with:
+          nim-version: "2.0.2"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate docs
+        run: nimble docs
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './src/htmldocs'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

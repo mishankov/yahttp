@@ -18,12 +18,14 @@ nimble install yahttp
 > more examples [here](examples/examples.nim)
 
 ## Get HTTP status code
+
 ```nim
 import yahttp
 
 echo get("https://www.google.com/").status
 ```
 ## Send query params and parse response to JSON
+
 ```nim
 import json
 import yahttp
@@ -64,6 +66,7 @@ Has the same arguments as method procedures and one additional:
 - `httpMethod` - HTTP method. `Method.GET` by default. Example: `Method.POST`
 
 ## Response object
+
 All procedures above return `Response` object with fields:
 - `status` - HTTP status code
 - `body` - response body as a string
@@ -79,3 +82,8 @@ All procedures above return `Response` object with fields:
 - `Response.html()` - returns response body as HTML
 - `Response.to(t)` - converts response body to JSON and unmarshals it to type `t`
 - `Response.ok()` - returns `true` if `status` is greater than 0 and less than 400
+- `Response.raiseForStatus()` - throws `HttpError` exceptions if status is 400 or above
+
+## Other helper functions
+
+`object.toJsonString()` - converts object of any type to json string. Helpful to use for `body` argument
