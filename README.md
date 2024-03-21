@@ -1,5 +1,6 @@
-# ⛵ yahttp - Awesome simple HTTP client for Nim 
+# ⛵ yahttp - Awesome simple HTTP client for Nim
 
+[![GitHub Release](https://img.shields.io/github/v/release/mishankov/yahttp?sort=semver&display_name=tag&logo=nim&label=latest%20release&color=%23FFE953)](https://github.com/mishankov/yahttp/releases/latest)
 [![CI](https://github.com/mishankov/yahttp/actions/workflows/ci.yml/badge.svg)](https://github.com/mishankov/yahttp/actions/workflows/ci.yml)
 
 
