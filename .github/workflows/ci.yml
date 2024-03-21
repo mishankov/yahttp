@@ -59,7 +59,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate docs
-        run: nimble docs
+        run: nim -d:ssl doc src/yahttp.nim
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
