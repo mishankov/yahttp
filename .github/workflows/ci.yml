@@ -65,7 +65,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate docs
-        run: nim -d:ssl doc src/yahttp.nim
+        run: nim -d:ssl --outdir:./htmldocs doc --project src/yahttp.nim
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -73,7 +73,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './src/htmldocs'
+          path: './htmldocs'
 
       - name: Deploy to GitHub Pages
         id: deployment
