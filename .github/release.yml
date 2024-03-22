@@ -9,5 +9,5 @@ changelog:
         labels:
           - dependencies
     - title: Other Changes
-        labels:
-          - "*"
+      labels:
+        - "*"
