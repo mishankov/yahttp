@@ -1,0 +1,13 @@
+# https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
+
+changelog:
+  categories:
+    - title: ⛵ Features
+      labels:
+        - enhancement
+      exclude:
+        labels:
+          - dependencies
+    - title: Other Changes
+        labels:
+          - "*"
