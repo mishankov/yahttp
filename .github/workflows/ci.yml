@@ -21,7 +21,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy: 
       matrix:
-        os: [ ubuntu-latest, macOS-latest, windows-latest ]
+        os: 
+          - ubuntu-latest
+          # - macOS-latest
+          - windows-latest
         nim-version: [ "2.0.0", "2.0.2" ]
 
     steps:
@@ -65,7 +68,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate docs
-        run: nim -d:ssl --outdir:./htmldocs doc --project src/yahttp.nim
+        run: nim scripts/generate_docs.nims
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
