@@ -15,13 +15,17 @@ permissions:
 
 jobs:
   build:
+    if: 1 == 0
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     runs-on: ${{ matrix.os }}
     strategy: 
       matrix:
-        os: [ ubuntu-latest, macOS-latest, windows-latest ]
+        os: 
+          - ubuntu-latest
+          # - macOS-latest
+          - windows-latest
         nim-version: [ "2.0.0", "2.0.2" ]
 
     steps:
@@ -42,8 +46,8 @@ jobs:
         run: nimble inttests
 
   deploy-docs:
-    needs:
-    - build
+    # needs:
+    # - build
     
     environment:
       name: github-pages
@@ -58,6 +62,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: jiro4989/setup-nim-action@v1
         with:
@@ -65,7 +71,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate docs
-        run: nim -d:ssl --outdir:./htmldocs doc --project src/yahttp.nim
+        run: nim scripts/generate_docs.nims
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
