@@ -46,8 +46,8 @@ jobs:
         run: nimble inttests
 
   deploy-docs:
-    needs:
-    - build
+    # needs:
+    # - build
     
     environment:
       name: github-pages
