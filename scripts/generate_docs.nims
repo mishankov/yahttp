@@ -1,6 +1,6 @@
 import strutils, strformat
 
-let tagsString = gorge("git tag --sort=version:refname")
+let tagsString = gorge("git tag --sort=version:refname").strip()
 
 echo "Tags: ", tagsString
 
@@ -14,4 +14,4 @@ for tag in tagsString.splitLines():
     generateDocs(tag, tag)
 
 generateDocs("main", "dev");
-generateDocs(tagsString.splitLines()[^2], "latest");
+generateDocs(tagsString.splitLines()[^1], "latest");
