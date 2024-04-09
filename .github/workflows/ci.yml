@@ -68,7 +68,7 @@ jobs:
         run: nim -d:ssl --outdir:./htmldocs doc --project src/yahttp.nim
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
