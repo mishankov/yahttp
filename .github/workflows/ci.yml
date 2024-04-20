@@ -22,7 +22,7 @@ jobs:
     strategy: 
       matrix:
         os: [ ubuntu-latest, macOS-latest, windows-latest ]
-        nim-version: [ "2.0.0", "2.0.2" ]
+        nim-version: [ "2.0.0", "2.0.2", "2.0.4" ]
 
     steps:
       - name: Checkout repository
@@ -61,7 +61,7 @@ jobs:
 
       - uses: jiro4989/setup-nim-action@v1
         with:
-          nim-version: "2.0.2"
+          nim-version: "2.0.4"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate docs
