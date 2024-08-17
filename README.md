@@ -56,6 +56,7 @@ Arguments:
 - `auth` - login and password for basic authorization. Example: `("login", "password")`
 - `timeout` - stop waiting for a response after a given number of milliseconds. `-1` for no timeout, which is default value
 - `ignoreSsl` - no certificate verification if `true`
+- `sslContext` - SSL context for TLS/SSL connections. See [newContext](https://nim-lang.org/docs/net.html#newContext%2Cstring%2Cstring%2Cstring%2Cstring)
 
 ## General procedure
 
