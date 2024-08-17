@@ -86,12 +86,14 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
     RequestHeader] = [], query: openArray[QueryParam] = [],
         encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams,
         body: string = "",
-    auth: BasicAuth = ("", ""), timeout = -1, ignoreSsl = false): Response =
+    auth: BasicAuth = ("", ""), timeout = -1, ignoreSsl = false, sslContext: SslContext = nil): Response =
   ## Genreal proc to make HTTP request with every HTTP method
 
   # Prepare client
 
-  let client: HttpClient = if ignoreSsl:
+  let client: HttpClient = if sslContext != nil:
+      newHttpClient(timeout = timeout, sslContext = sslContext)
+    elif ignoreSsl:
       newHttpClient(timeout = timeout, sslContext = newContext(
           verifyMode = CVerifyNone))
     else:
