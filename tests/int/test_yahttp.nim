@@ -7,6 +7,8 @@ include yahttp
 const BASE_URL = "http://localhost:8080"
 
 test "Test HTTP methods":
+  check get(BASE_URL & "/get").ok()
+  check head(BASE_URL & "/head").ok()
   check put(BASE_URL & "/put").ok()
   check post(BASE_URL & "/post").ok()
   check patch(BASE_URL & "/patch").ok()
