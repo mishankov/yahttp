@@ -85,7 +85,7 @@ const defaultEncodeQueryParams = EncodeQueryParams(usePlus: false, omitEq: true,
 proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
     RequestHeader] = [], query: openArray[QueryParam] = [],
         encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams,
-        body: string = "",
+        body: string = "", data: tuple[name, fileName, contentType, content: string] = ("", "", "", ""),
     auth: BasicAuth = ("", ""), timeout = -1, ignoreSsl = false, sslContext: SslContext = nil): Response =
   ## Genreal proc to make HTTP request with every HTTP method
 
@@ -131,7 +131,13 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
 
   # Make request
 
-  let response = client.request(innerUrl, httpMethod = innerMethod, body = body)
+  let response = if data.name != "":
+    var multipartData = newMultipartData()
+    multipartData[data.name] = (data.fileName, data.contentType, data.content)
+    client.request(innerUrl, httpMethod = innerMethod, multipart = multipartData)
+  else:
+    client.request(innerUrl, httpMethod = innerMethod, body = body)
+
   client.close()
 
   return response.toResp(requestUrl = innerUrl, requestHeaders = innerHeaders,
