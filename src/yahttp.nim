@@ -14,7 +14,8 @@ type
     omitEq*: bool
     sep*: char
 
-  MultipartFile* = tuple[multipartName, fileName, contentType, content: string] ## Type for uploaded file
+  MultipartFile* = tuple[multipartName, fileName, contentType,
+    content: string] ## Type for uploaded file
 
   Method* = enum
     ## Supported HTTP methods
@@ -88,7 +89,8 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
     RequestHeader] = [], query: openArray[QueryParam] = [],
         encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams,
         body: string = "", files: openArray[MultipartFile] = [],
-    auth: BasicAuth = ("", ""), timeout = -1, ignoreSsl = false, sslContext: SslContext = nil): Response =
+    auth: BasicAuth = ("", ""), timeout = -1, ignoreSsl = false,
+        sslContext: SslContext = nil): Response =
   ## Genreal proc to make HTTP request with every HTTP method
 
   # Prepare client
@@ -139,7 +141,8 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
     var multipartData = newMultipartData()
     for file in files:
       multipartData[file.multipartName] = (file.fileName, file.contentType, file.content)
-    client.request(innerUrl, httpMethod = innerMethod, multipart = multipartData)
+    client.request(innerUrl, httpMethod = innerMethod,
+        multipart = multipartData)
   else:
     client.request(innerUrl, httpMethod = innerMethod, body = body)
 
