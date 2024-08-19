@@ -66,3 +66,15 @@ test "Test sending single file":
   check resp["data"].getStr().contains("test.txt")
   check resp["data"].getStr().contains("text/plain")
   check resp["data"].getStr().contains("some file content")
+
+test "Test sending multiple files":
+  let resp = post(BASE_URL & "/post", files = @[("my_file", "test.txt", "text/plain", "some file content"), ("my_second_file", "test2.txt", "text/plain", "second file content")]).json()
+  
+  check resp["files"]["my_file"][0].getStr() == "some file content"
+  check resp["files"]["my_second_file"][0].getStr() == "second file content"
+  check resp["data"].getStr().contains("test.txt")
+  check resp["data"].getStr().contains("text/plain")
+  check resp["data"].getStr().contains("some file content")
+  check resp["data"].getStr().contains("test2.txt")
+  check resp["data"].getStr().contains("text/plain")
+  check resp["data"].getStr().contains("second file content")
