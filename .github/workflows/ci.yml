@@ -22,7 +22,7 @@ jobs:
     strategy: 
       matrix:
         os: [ ubuntu-latest, macOS-latest, windows-latest ]
-        nim-version: [ "2.0.x", "stable" ]
+        nim-version: [ "1.6.x", "stable" ]
 
     steps:
       - name: Checkout repository
