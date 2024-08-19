@@ -41,7 +41,7 @@ test "Test JSON body":
 
   check jsonResp["json"]["key"].getStr() == "value"
 
-test "Test body with toJson helper":
+test "Test body with toJsonString helper":
   type TestReq = object
     field1: string
     field2: int
@@ -57,3 +57,12 @@ test "Test timeout":
 
   # No exception
   discard get(BASE_URL & "/delay/5", timeout = -1)
+
+
+test "Test sending single file":
+  let resp = post(BASE_URL & "/post", files = @[("my_file", "test.txt", "text/plain", "some file content")]).json()
+  
+  check resp["files"]["my_file"][0].getStr() == "some file content"
+  check resp["data"].getStr().contains("test.txt")
+  check resp["data"].getStr().contains("text/plain")
+  check resp["data"].getStr().contains("some file content")
