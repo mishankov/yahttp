@@ -6,7 +6,7 @@ macro http_method_gen*(name: untyped): untyped =
   let comment = newCommentStmtNode(fmt"Proc for {methodUpper} HTTP method")
   quote do:
     proc `name`*(url: string, headers: openArray[RequestHeader] = [], query: openArray[
-      QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "", files: openArray[tuple[name, fileName, contentType, content: string]] = [], auth: BasicAuth = ("", ""), timeout = -1,
+      QueryParam] = [], encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams, body: string = "", files: openArray[MultipartFile] = [], auth: BasicAuth = ("", ""), timeout = -1,
       ignoreSsl = false, sslContext: SslContext = nil): Response =
       `comment`
       return request(
