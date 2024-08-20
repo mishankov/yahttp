@@ -17,3 +17,6 @@ for catTag in catTags[0..4]:
     echo "Response status: ", catData.status
     echo "Response headers: ", catData.headers
     echo "Response body: ", catData.body
+
+# Send file
+echo post("https://validator.w3.org/check", files = @[("uploaded_file", "test.html", "text/html", "<html><head></head><body><p>test</p></body></html>")]).body
