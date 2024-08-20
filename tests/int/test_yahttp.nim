@@ -82,24 +82,27 @@ test "Test sending multiple files":
 
 
 const TEST_FILE_PATH_1 = INT_TESTS_BASE_PATH & "/test_data/test_file_1.txt"
+const TEST_FILE_CONTENT_1 = readFile(TEST_FILE_PATH_1)
+
 const TEST_FILE_PATH_2 = INT_TESTS_BASE_PATH & "/test_data/test_file_2.txt"
+const TEST_FILE_CONTENT_2 = readFile(TEST_FILE_PATH_2)
 
 test "Test streaming single file":
   let resp = post(BASE_URL & "/post", streamingFiles = @[("my_file", TEST_FILE_PATH_1)]).json()
 
-  check resp["files"]["my_file"][0].getStr() == readFile(TEST_FILE_PATH_1)
+  check resp["files"]["my_file"][0].getStr() == TEST_FILE_CONTENT_1
   check resp["data"].getStr().contains("test_file_1.txt")
   check resp["data"].getStr().contains("text/plain")
-  check resp["data"].getStr().contains(readFile(TEST_FILE_PATH_1))
+  check resp["data"].getStr().contains(TEST_FILE_CONTENT_1)
 
 test "Test streaming multiple files":
   let resp = post(BASE_URL & "/post", streamingFiles = @[("my_file", TEST_FILE_PATH_1), ("my_second_file", TEST_FILE_PATH_2)]).json()
 
-  check resp["files"]["my_file"][0].getStr() == readFile(TEST_FILE_PATH_1)
-  check resp["files"]["my_second_file"][0].getStr() == readFile(TEST_FILE_PATH_2)
+  check resp["files"]["my_file"][0].getStr() == TEST_FILE_CONTENT_1
+  check resp["files"]["my_second_file"][0].getStr() == TEST_FILE_CONTENT_2
   check resp["data"].getStr().contains("test_file_1.txt")
   check resp["data"].getStr().contains("text/plain")
-  check resp["data"].getStr().contains(readFile(TEST_FILE_PATH_1))
+  check resp["data"].getStr().contains(TEST_FILE_CONTENT_1)
   check resp["data"].getStr().contains("test_file_2.txt")
   check resp["data"].getStr().contains("text/plain")
-  check resp["data"].getStr().contains(readFile(TEST_FILE_PATH_2))
+  check resp["data"].getStr().contains(TEST_FILE_CONTENT_2)
