@@ -17,6 +17,8 @@ type
   MultipartFile* = tuple[multipartName, fileName, contentType,
     content: string] ## Type for uploaded file
 
+  StreamingMultipartFile* = tuple[name, file: string]
+
   Method* = enum
     ## Supported HTTP methods
     GET, PUT, POST, PATCH, DELETE, HEAD, OPTIONS
@@ -89,6 +91,7 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
     RequestHeader] = [], query: openArray[QueryParam] = [],
         encodeQueryParams: EncodeQueryParams = defaultEncodeQueryParams,
         body: string = "", files: openArray[MultipartFile] = [],
+            streamingFiles: openArray[StreamingMultipartFile] = [],
     auth: BasicAuth = ("", ""), timeout = -1, ignoreSsl = false,
         sslContext: SslContext = nil): Response =
   ## Genreal proc to make HTTP request with every HTTP method
@@ -136,13 +139,22 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
   # Make request
 
   let response = if files.len() > 0:
-    # Prepear multipart data for files
+    # Prepare multipart data for files
 
     var multipartData = newMultipartData()
     for file in files:
       multipartData[file.multipartName] = (file.fileName, file.contentType, file.content)
     client.request(innerUrl, httpMethod = innerMethod,
         multipart = multipartData)
+  elif streamingFiles.len() > 0:
+    # Prepare multipart data for streaming files
+
+    var multipartData = newMultipartData()
+    # for file in streamingFiles:
+    multipartData.addFiles(streamingFiles)
+    client.request(innerUrl, httpMethod = innerMethod,
+        multipart = multipartData)
+
   else:
     client.request(innerUrl, httpMethod = innerMethod, body = body)
 

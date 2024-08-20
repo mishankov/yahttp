@@ -5,6 +5,7 @@ include yahttp
 
 
 const BASE_URL = "http://localhost:8080"
+const INT_TESTS_BASE_PATH = "tests/int"
 
 test "Test HTTP methods":
   check get(BASE_URL & "/get").ok()
@@ -78,3 +79,27 @@ test "Test sending multiple files":
   check resp["data"].getStr().contains("test2.txt")
   check resp["data"].getStr().contains("text/plain")
   check resp["data"].getStr().contains("second file content")
+
+
+const TEST_FILE_PATH_1 = INT_TESTS_BASE_PATH & "/test_data/test_file_1.txt"
+const TEST_FILE_PATH_2 = INT_TESTS_BASE_PATH & "/test_data/test_file_2.txt"
+
+test "Test streaming single file":
+  let resp = post(BASE_URL & "/post", streamingFiles = @[("my_file", TEST_FILE_PATH_1)]).json()
+
+  check resp["files"]["my_file"][0].getStr() == readFile(TEST_FILE_PATH_1)
+  check resp["data"].getStr().contains("test_file_1.txt")
+  check resp["data"].getStr().contains("text/plain")
+  check resp["data"].getStr().contains(readFile(TEST_FILE_PATH_1))
+
+test "Test streaming multiple files":
+  let resp = post(BASE_URL & "/post", streamingFiles = @[("my_file", TEST_FILE_PATH_1), ("my_second_file", TEST_FILE_PATH_2)]).json()
+
+  check resp["files"]["my_file"][0].getStr() == readFile(TEST_FILE_PATH_1)
+  check resp["files"]["my_second_file"][0].getStr() == readFile(TEST_FILE_PATH_2)
+  check resp["data"].getStr().contains("test_file_1.txt")
+  check resp["data"].getStr().contains("text/plain")
+  check resp["data"].getStr().contains(readFile(TEST_FILE_PATH_1))
+  check resp["data"].getStr().contains("test_file_2.txt")
+  check resp["data"].getStr().contains("text/plain")
+  check resp["data"].getStr().contains(readFile(TEST_FILE_PATH_2))
