@@ -17,7 +17,7 @@ type
   MultipartFile* = tuple[multipartName, fileName, contentType,
     content: string] ## Type for uploaded file
 
-  StreamingMultipartFile* = tuple[name, file: string]
+  StreamingMultipartFile* = tuple[name, file: string] ## Type for streaming file
 
   Method* = enum
     ## Supported HTTP methods
