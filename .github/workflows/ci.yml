@@ -22,7 +22,7 @@ jobs:
     strategy: 
       matrix:
         os: [ ubuntu-latest, macOS-latest, windows-latest ]
-        nim-version: [ "2.0.0", "2.0.2", "2.0.4", "2.0.6", "2.0.8" ]
+        nim-version: [ "2.0.x" ]
 
     steps:
       - name: Checkout repository
@@ -45,14 +45,14 @@ jobs:
     needs:
     - build
     
+    if: github.ref_type == 'tag'
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    if: github.event_name == 'release' && github.event.action == 'created'
 
     runs-on: ubuntu-latest
     steps:
