@@ -138,23 +138,20 @@ proc request*(url: string, httpMethod: Method = Method.GET, headers: openArray[
 
   # Make request
 
-  let response = if files.len() > 0:
+  let response = if files.len() > 0 or streamingFiles.len() > 0:
     # Prepare multipart data for files
-
     var multipartData = newMultipartData()
-    for file in files:
-      multipartData[file.multipartName] = (file.fileName, file.contentType, file.content)
+
+    if files.len() > 0:
+      for file in files:
+        multipartData[file.multipartName] = (file.fileName, file.contentType, file.content)
+
+    if streamingFiles.len() > 0:
+      multipartData.addFiles(streamingFiles)
+
+
     client.request(innerUrl, httpMethod = innerMethod,
         multipart = multipartData)
-  elif streamingFiles.len() > 0:
-    # Prepare multipart data for streaming files
-
-    var multipartData = newMultipartData()
-    # for file in streamingFiles:
-    multipartData.addFiles(streamingFiles)
-    client.request(innerUrl, httpMethod = innerMethod,
-        multipart = multipartData)
-
   else:
     client.request(innerUrl, httpMethod = innerMethod, body = body)
 
