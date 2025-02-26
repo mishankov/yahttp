@@ -1,5 +1,4 @@
 import unittest
-import json
 
 include yahttp
 
@@ -87,6 +86,12 @@ const TEST_FILE_CONTENT_1 = readFile(TEST_FILE_PATH_1)
 const TEST_FILE_PATH_2 = INT_TESTS_BASE_PATH & "/test_data/test_file_2.txt"
 const TEST_FILE_CONTENT_2 = readFile(TEST_FILE_PATH_2)
 
+const TEST_FILE_PATH_3 = INT_TESTS_BASE_PATH & "/test_data/test_file_3.txt"
+const TEST_FILE_CONTENT_3 = readFile(TEST_FILE_PATH_3)
+
+const TEST_FILE_PATH_4 = INT_TESTS_BASE_PATH & "/test_data/test_file_4.txt"
+const TEST_FILE_CONTENT_4 = readFile(TEST_FILE_PATH_4)
+
 test "Test streaming single file":
   let resp = post(BASE_URL & "/post", streamingFiles = @[("my_file", TEST_FILE_PATH_1)]).json()
 
@@ -106,3 +111,23 @@ test "Test streaming multiple files":
   check resp["data"].getStr().contains("test_file_2.txt")
   check resp["data"].getStr().contains("text/plain")
   check resp["data"].getStr().contains(TEST_FILE_CONTENT_2)
+
+test "Test sending and streaming multiple files":
+  let resp = post(BASE_URL & "/post", streamingFiles = @[("my_file", TEST_FILE_PATH_1), ("my_second_file", TEST_FILE_PATH_2)], files = @[("my_third_file", "test_file_3.txt", "text/plain", TEST_FILE_CONTENT_3), ("my_fourth_file", "test_file_4.txt", "text/plain", TEST_FILE_CONTENT_4)]).json()
+
+  check resp["files"]["my_file"][0].getStr() == TEST_FILE_CONTENT_1
+  check resp["files"]["my_second_file"][0].getStr() == TEST_FILE_CONTENT_2
+  check resp["files"]["my_third_file"][0].getStr() == TEST_FILE_CONTENT_3
+  check resp["files"]["my_fourth_file"][0].getStr() == TEST_FILE_CONTENT_4
+  check resp["data"].getStr().contains("test_file_1.txt")
+  check resp["data"].getStr().contains("text/plain")
+  check resp["data"].getStr().contains(TEST_FILE_CONTENT_1)
+  check resp["data"].getStr().contains("test_file_2.txt")
+  check resp["data"].getStr().contains("text/plain")
+  check resp["data"].getStr().contains(TEST_FILE_CONTENT_2)
+  check resp["data"].getStr().contains("test_file_3.txt")
+  check resp["data"].getStr().contains("text/plain")
+  check resp["data"].getStr().contains(TEST_FILE_CONTENT_3)
+  check resp["data"].getStr().contains("test_file_4.txt")
+  check resp["data"].getStr().contains("text/plain")
+  check resp["data"].getStr().contains(TEST_FILE_CONTENT_4)
